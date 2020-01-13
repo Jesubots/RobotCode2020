@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  public static RobotContainer m_robotContainer;
+  public static Joystick driver_stick = new Joystick(0);
+  public static Joystick driver_stick_2 = new Joystick(1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
