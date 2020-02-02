@@ -9,8 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,6 +26,7 @@ public class Robot extends TimedRobot {
   public static RobotContainer m_robotContainer;
   public static Joystick driver_stick = new Joystick(0);
   public static Joystick driver_stick_2 = new Joystick(1);
+  public static DriveTrain m_drivetrain = new DriveTrain();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -50,6 +53,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putNumber("x-coord", m_drivetrain.getPose().getTranslation().getX());
+    SmartDashboard.putNumber("y-coord", m_drivetrain.getPose().getTranslation().getY());
+    SmartDashboard.putNumber("angle", m_drivetrain.getGyroAngle().getDegrees());
   }
 
   /**

@@ -16,4 +16,6 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static double DRIVETRAIN_GEAR_RATIO = 4.74;
+    public static double TRACK_WIDTH = 0.7112;
 }
