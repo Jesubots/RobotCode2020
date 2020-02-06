@@ -7,13 +7,31 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -57,6 +75,53 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(Constants.ksVolts,
+                                        Constants.kvVoltSecondsPerMeter,
+                                        Constants.kaVoltSecondsSquaredPerMeter),
+                                        Constants.kDriveKinematics,
+            10);
+    
+    // Create config for trajectory
+    TrajectoryConfig config =
+        new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond,
+                             Constants.kMaxAccelerationMetersPerSecondSquared)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(Constants.kDriveKinematics)
+            // Apply the voltage constraint
+            .addConstraint(autoVoltageConstraint);
+    
+    Trajectory trajectory;
+    String trajectoryJSON = "../../../../../../PathWeaver/output/WallToScaffold.json";
+    System.out.println(trajectoryJSON);
+    try {
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+    } catch (IOException ex) {
+      trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(0, 0),new Translation2d(0, 0)),
+                                                          new Pose2d(0, 0, new Rotation2d(0)),config);
+      DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+    
+    RamseteCommand ramseteCommand = new RamseteCommand(
+      trajectory,
+      Robot.m_driveTrain::getPose,
+      new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+      new SimpleMotorFeedforward(Constants.ksVolts,
+                                  Constants.kvVoltSecondsPerMeter,
+                                  Constants.kaVoltSecondsSquaredPerMeter),
+                                  Constants.kDriveKinematics,
+      Robot.m_driveTrain::getWheelSpeeds,
+      new PIDController(Constants.kPDriveVel, 0, 0),
+      new PIDController(Constants.kPDriveVel, 0, 0),
+      Robot.m_driveTrain::tankDriveVolts,
+      Robot.m_driveTrain
+  );
+
+    
+
+    return ramseteCommand.andThen(() -> Robot.m_driveTrain.tankDriveVolts(0, 0));
   }
 }

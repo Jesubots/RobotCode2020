@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -42,44 +43,91 @@ public class DriveTrain extends SubsystemBase {
   private ChassisSpeeds speeds = new ChassisSpeeds();
   private final AHRS ahrs = new AHRS();
 
+  private boolean speedUpdater = false;
+  private double offLeftVal = 0;
+  private double offRightVal = 0;
+  private double onLeftVal = 0;
+  private double onRightVal = 0;
+  private double leftSpeed = 0;
+  private double rightSpeed = 0;
+
   public DriveTrain() {
     left_follower.set(ControlMode.Follower, 0);
     right_follower.set(ControlMode.Follower, 2);
 
-    dt_odometry = new DifferentialDriveOdometry(getGyroAngle());
-    dt_kinematics = new DifferentialDriveKinematics(Constants.TRACK_WIDTH);
+    dt_odometry = new DifferentialDriveOdometry(getHeading());
+    dt_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidthMeters); 
   }
 
   @Override
   public void periodic() {
-    driveTrain.tankDrive(Robot.driver_stick.getY(), Robot.driver_stick_2.getY());
+    updateOdometry();
+    if(speedUpdater)
+      updateSpeedOn();
+    else
+      updateSpeedOff();
   }
 
-  public Rotation2d getGyroAngle() {
+  public Rotation2d getHeading() {
     return Rotation2d.fromDegrees(ahrs.getAngle());
   }
 
-  public double getLeftEncoderDistance() {
+  public double getLeftEncoder() {
     left_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    double dist = left_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
-    return dist;
+    return left_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
   }
 
-  public double getRightEncoderDistance() {
+  public double getRightEncoder() {
     right_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    double dist = right_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
-    return dist;
+    return right_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
+  }
+
+  public double getLeftSpeed() {
+    return leftSpeed;
+  }
+
+  public double getRightSpeed() {
+    return rightSpeed;
   }
 
   public Pose2d getPose() {
     return dt_odometry.getPoseMeters();
   }
 
-  public void updateChassisSpeeds() {
-    
+  public void zeroHeading() {
+    ahrs.reset();
+  }
+
+  public void arcadeDrive(double leftInput, double twistInput) {
+    driveTrain.arcadeDrive(leftInput, twistInput);
   }
 
   public void updateOdometry() {
-    dt_odometry.update(getGyroAngle(), getLeftEncoderDistance(), getRightEncoderDistance());
+    dt_odometry.update(getHeading(), getLeftEncoder(), getRightEncoder());
   }
+
+  private void updateSpeedOn() {
+    leftSpeed = (getLeftEncoder() - offLeftVal) / .02;
+    rightSpeed = (getRightEncoder() - offRightVal) / .02;
+    onLeftVal = getLeftEncoder();
+    onRightVal = getRightEncoder();
+  }
+
+  private void updateSpeedOff() {
+    leftSpeed = (getLeftEncoder() - onLeftVal) / .02;
+    rightSpeed = (getRightEncoder() - onRightVal) / .02;
+    offLeftVal = getLeftEncoder();
+    offRightVal = getRightEncoder();
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts){
+    left_front.setVoltage(leftVolts);
+    left_front.setVoltage(-rightVolts);
+    driveTrain.feed();
+  }
+
 }

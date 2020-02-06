@@ -25,8 +25,7 @@ public class Robot extends TimedRobot {
 
   public static RobotContainer m_robotContainer;
   public static Joystick driver_stick = new Joystick(0);
-  public static Joystick driver_stick_2 = new Joystick(1);
-  public static DriveTrain m_drivetrain = new DriveTrain();
+  public static DriveTrain m_driveTrain = new DriveTrain();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -54,9 +53,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("x-coord", m_drivetrain.getPose().getTranslation().getX());
-    SmartDashboard.putNumber("y-coord", m_drivetrain.getPose().getTranslation().getY());
-    SmartDashboard.putNumber("angle", m_drivetrain.getGyroAngle().getDegrees());
+    SmartDashboard.putNumber("x-coord", m_driveTrain.getPose().getTranslation().getX());
+    SmartDashboard.putNumber("y-coord", m_driveTrain.getPose().getTranslation().getY());
+    SmartDashboard.putNumber("angle", m_driveTrain.getHeading().getDegrees());
   }
 
   /**
@@ -99,6 +98,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_driveTrain.arcadeDrive(Robot.driver_stick.getY(), Robot.driver_stick.getTwist());
   }
 
   /**
