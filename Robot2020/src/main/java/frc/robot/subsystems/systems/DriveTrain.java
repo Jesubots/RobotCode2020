@@ -5,11 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.systems;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.music.Orchestra;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -43,6 +48,8 @@ public class DriveTrain extends SubsystemBase {
   private ChassisSpeeds speeds = new ChassisSpeeds();
   private final AHRS ahrs = new AHRS();
 
+
+
   private boolean speedUpdater = false;
   private double offLeftVal = 0;
   private double offRightVal = 0;
@@ -74,12 +81,12 @@ public class DriveTrain extends SubsystemBase {
 
   public double getLeftEncoder() {
     left_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    return left_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
+    return left_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.kDriveTrainGearRatio;
   }
 
   public double getRightEncoder() {
     right_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    return right_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.DRIVETRAIN_GEAR_RATIO;
+    return right_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.kDriveTrainGearRatio;
   }
 
   public double getLeftSpeed() {
@@ -128,6 +135,10 @@ public class DriveTrain extends SubsystemBase {
     left_front.setVoltage(leftVolts);
     left_front.setVoltage(-rightVolts);
     driveTrain.feed();
+  }
+
+  public void note() {
+    
   }
 
 }

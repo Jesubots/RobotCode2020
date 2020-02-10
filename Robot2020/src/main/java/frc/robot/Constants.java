@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  */
 public final class Constants {
     //DRIVETRAIN CONSTANTS
-    public static final double DRIVETRAIN_GEAR_RATIO = 4.74;
+    public static final double kDriveTrainGearRatio = 4.74;
 
     //CHARACTERIZATION CONSTANTS
     public static final double ksVolts = 0; 
