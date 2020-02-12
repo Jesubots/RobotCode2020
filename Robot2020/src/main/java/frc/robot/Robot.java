@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_driveTrain.arcadeDrive(Robot.driver_stick.getY(), Robot.driver_stick.getTwist());
+    
   }
 
   /**
@@ -106,6 +106,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    m_driveTrain.arcadeDrive(Robot.driver_stick.getY(), Robot.driver_stick.getTwist());
   }
 
   @Override

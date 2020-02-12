@@ -35,10 +35,10 @@ public class DriveTrain extends SubsystemBase {
   private static double enc_res = 4096;
   private static double wheel_rad = 0.0762; //meters
 
-  private WPI_TalonSRX left_front = new WPI_TalonSRX(0);
-  private WPI_TalonSRX left_follower = new WPI_TalonSRX(1);
-  private WPI_TalonSRX right_front = new WPI_TalonSRX(2);
-  private WPI_TalonSRX right_follower = new WPI_TalonSRX(3);
+  public WPI_TalonSRX left_front = new WPI_TalonSRX(1);
+  public WPI_TalonSRX left_follower = new WPI_TalonSRX(3);
+  public WPI_TalonSRX right_front = new WPI_TalonSRX(2);
+  public WPI_TalonSRX right_follower = new WPI_TalonSRX(0);
   private SpeedControllerGroup dt_left = new SpeedControllerGroup(left_follower, left_front);
   private SpeedControllerGroup dt_right = new SpeedControllerGroup(right_follower, right_front);
 
@@ -64,6 +64,11 @@ public class DriveTrain extends SubsystemBase {
 
     dt_odometry = new DifferentialDriveOdometry(getHeading());
     dt_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidthMeters); 
+
+    left_front.setSafetyEnabled(false);
+    right_front.setSafetyEnabled(false);
+    left_follower.setSafetyEnabled(false);
+    right_follower.setSafetyEnabled(false);
   }
 
   @Override
@@ -140,5 +145,6 @@ public class DriveTrain extends SubsystemBase {
   public void note() {
     
   }
+  
 
 }
