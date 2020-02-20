@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.music.Orchestra;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.commands.driveTrain.ArcadeDrive;
 
 public class DriveTrain extends SubsystemBase {
   
@@ -47,8 +49,7 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveKinematics dt_kinematics;
   private ChassisSpeeds speeds = new ChassisSpeeds();
   private final AHRS ahrs = new AHRS();
-
-
+  private Joystick driver_stick = Robot.m_robotContainer.driver_stick;
 
   private boolean speedUpdater = false;
   private double offLeftVal = 0;
@@ -65,10 +66,9 @@ public class DriveTrain extends SubsystemBase {
     dt_odometry = new DifferentialDriveOdometry(getHeading());
     dt_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidthMeters); 
 
-    left_front.setSafetyEnabled(false);
-    right_front.setSafetyEnabled(false);
-    left_follower.setSafetyEnabled(false);
-    right_follower.setSafetyEnabled(false);
+    //driveTrain.setSafetyEnabled(true);
+
+    setDefaultCommand(new ArcadeDrive());
   }
 
   @Override
@@ -140,10 +140,6 @@ public class DriveTrain extends SubsystemBase {
     left_front.setVoltage(leftVolts);
     left_front.setVoltage(-rightVolts);
     driveTrain.feed();
-  }
-
-  public void note() {
-    
   }
   
 

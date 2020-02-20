@@ -24,8 +24,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static RobotContainer m_robotContainer;
-  public static Joystick driver_stick = new Joystick(0);
-  public static DriveTrain m_driveTrain = new DriveTrain();
+  
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -53,9 +52,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("x-coord", m_driveTrain.getPose().getTranslation().getX());
-    SmartDashboard.putNumber("y-coord", m_driveTrain.getPose().getTranslation().getY());
-    SmartDashboard.putNumber("angle", m_driveTrain.getHeading().getDegrees());
+    SmartDashboard.putNumber("x-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getX());
+    SmartDashboard.putNumber("y-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getY());
+    SmartDashboard.putNumber("angle", m_robotContainer.m_driveTrain.getHeading().getDegrees());
   }
 
   /**
@@ -106,7 +105,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_driveTrain.arcadeDrive(Robot.driver_stick.getY(), Robot.driver_stick.getTwist());
+    
   }
 
   @Override

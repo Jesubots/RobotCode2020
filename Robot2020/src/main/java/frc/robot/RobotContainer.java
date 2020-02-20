@@ -44,6 +44,8 @@ public class RobotContainer {
   private final DriveTrain m_exampleSubsystem = new DriveTrain();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  public Joystick driver_stick = new Joystick(0);
+  public DriveTrain m_driveTrain = new DriveTrain();
 
   
 
@@ -107,21 +109,21 @@ public class RobotContainer {
     
     RamseteCommand ramseteCommand = new RamseteCommand(
       trajectory,
-      Robot.m_driveTrain::getPose,
+      m_driveTrain::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       new SimpleMotorFeedforward(Constants.ksVolts,
                                   Constants.kvVoltSecondsPerMeter,
                                   Constants.kaVoltSecondsSquaredPerMeter),
                                   Constants.kDriveKinematics,
-      Robot.m_driveTrain::getWheelSpeeds,
+      m_driveTrain::getWheelSpeeds,
       new PIDController(Constants.kPDriveVel, 0, 0),
       new PIDController(Constants.kPDriveVel, 0, 0),
-      Robot.m_driveTrain::tankDriveVolts,
-      Robot.m_driveTrain
+      m_driveTrain::tankDriveVolts,
+      m_driveTrain
   );
 
     
 
-    return ramseteCommand.andThen(() -> Robot.m_driveTrain.tankDriveVolts(0, 0));
+    return ramseteCommand.andThen(() -> m_driveTrain.tankDriveVolts(0, 0));
   }
 }
