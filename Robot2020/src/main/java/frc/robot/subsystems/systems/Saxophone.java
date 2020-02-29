@@ -7,19 +7,35 @@
 
 package frc.robot.subsystems.systems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 
 public class Saxophone extends SubsystemBase {
+
+  private WPI_TalonSRX flywheel = new WPI_TalonSRX(5);
+
   /**
    * Creates a new Saxophone.
    */
   
   public Saxophone() {
-
+    flywheel.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    driveFlywheelRawOutput(Robot.m_robotContainer.driver_stick.getThrottle());
+  }
+
+  public void driveFlywheelRawOutput(double output) {
+    flywheel.set(ControlMode.PercentOutput, output);
+  }
+
+  public double getFlywheelVelocity() {
+    return flywheel.getSelectedSensorVelocity();
   }
 }

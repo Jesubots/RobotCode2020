@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -28,8 +27,12 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.systems.DriveTrain;
+import frc.robot.subsystems.systems.Intake;
+import frc.robot.subsystems.systems.Magazine;
+import frc.robot.subsystems.systems.Pneumatics;
+import frc.robot.subsystems.systems.Saxophone;
+import frc.robot.subsystems.systems.Spinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
@@ -41,11 +44,13 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_exampleSubsystem = new DriveTrain();
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   public Joystick driver_stick = new Joystick(0);
   public DriveTrain m_driveTrain = new DriveTrain();
+  public Intake m_intake = new Intake();
+  public Magazine m_magazine = new Magazine();
+  public Pneumatics m_pneumatics = new Pneumatics();
+  public Saxophone m_saxophone = new Saxophone();
+  public Spinner m_spinner = new Spinner();
 
   
 

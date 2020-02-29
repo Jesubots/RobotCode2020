@@ -7,9 +7,14 @@
 
 package frc.robot.subsystems.systems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
+
+  private WPI_TalonSRX intake = new WPI_TalonSRX(8);
+
   /**
    * Creates a new Intake.
    */

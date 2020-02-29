@@ -7,14 +7,9 @@
 
 package frc.robot.subsystems.systems;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.music.Orchestra;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -51,17 +46,11 @@ public class DriveTrain extends SubsystemBase {
   private final AHRS ahrs = new AHRS();
   private Joystick driver_stick = Robot.m_robotContainer.driver_stick;
 
-  private boolean speedUpdater = false;
-  private double offLeftVal = 0;
-  private double offRightVal = 0;
-  private double onLeftVal = 0;
-  private double onRightVal = 0;
-  private double leftSpeed = 0;
-  private double rightSpeed = 0;
-
   public DriveTrain() {
     left_follower.set(ControlMode.Follower, 0);
     right_follower.set(ControlMode.Follower, 2);
+    left_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    right_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     dt_odometry = new DifferentialDriveOdometry(getHeading());
     dt_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidthMeters); 
@@ -73,11 +62,8 @@ public class DriveTrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    updateOdometry();
-    if(speedUpdater)
-      updateSpeedOn();
-    else
-      updateSpeedOff();
+    arcadeDrive(driver_stick.getY(), driver_stick.getTwist());
+    
   }
 
   public Rotation2d getHeading() {
@@ -85,21 +71,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double getLeftEncoder() {
-    left_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    return left_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.kDriveTrainGearRatio;
+    return (left_front.getSelectedSensorPosition() / enc_res) * (2 * wheel_rad * Math.PI) / Constants.kDriveTrainGearRatio;
   }
 
   public double getRightEncoder() {
-    right_front.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    return right_front.getSelectedSensorPosition() / enc_res * 2 * wheel_rad * Math.PI / Constants.kDriveTrainGearRatio;
-  }
-
-  public double getLeftSpeed() {
-    return leftSpeed;
-  }
-
-  public double getRightSpeed() {
-    return rightSpeed;
+    return (right_front.getSelectedSensorPosition() / enc_res) * (2 * wheel_rad * Math.PI) / Constants.kDriveTrainGearRatio;
   }
 
   public Pose2d getPose() {
@@ -117,23 +93,8 @@ public class DriveTrain extends SubsystemBase {
   public void updateOdometry() {
     dt_odometry.update(getHeading(), getLeftEncoder(), getRightEncoder());
   }
-
-  private void updateSpeedOn() {
-    leftSpeed = (getLeftEncoder() - offLeftVal) / .02;
-    rightSpeed = (getRightEncoder() - offRightVal) / .02;
-    onLeftVal = getLeftEncoder();
-    onRightVal = getRightEncoder();
-  }
-
-  private void updateSpeedOff() {
-    leftSpeed = (getLeftEncoder() - onLeftVal) / .02;
-    rightSpeed = (getRightEncoder() - onRightVal) / .02;
-    offLeftVal = getLeftEncoder();
-    offRightVal = getRightEncoder();
-  }
-
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
+    return new DifferentialDriveWheelSpeeds(left_front.getSelectedSensorVelocity(), right_front.getSelectedSensorVelocity());
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts){

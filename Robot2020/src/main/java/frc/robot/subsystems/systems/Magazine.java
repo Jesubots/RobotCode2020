@@ -7,14 +7,20 @@
 
 package frc.robot.subsystems.systems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Magazine extends SubsystemBase {
+
+  private WPI_TalonSRX belt = new WPI_TalonSRX(6);
+  private WPI_TalonSRX conveyer = new WPI_TalonSRX(7);
+
   /**
    * Creates a new Magazine.
    */
   public Magazine() {
-
+    
   }
 
   @Override

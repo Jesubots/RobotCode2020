@@ -7,12 +7,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.systems.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,6 +23,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static RobotContainer m_robotContainer;
+
+  private boolean visionTargetPresent = false;
+  private double visionOffsetX;
+  private double visionOffsetY;
   
 
   /**
@@ -35,6 +38,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
   }
 
   /**
@@ -52,9 +56,17 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
+    visionTargetPresent = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 0 ? true : false;
+    visionOffsetX = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    visionOffsetY = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+
+    SmartDashboard.putBoolean("vision target present: ", visionTargetPresent);
+    SmartDashboard.putNumber("vision x offset", visionOffsetX);
+    SmartDashboard.putNumber("vision y offset", visionOffsetY);
     SmartDashboard.putNumber("x-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getX());
     SmartDashboard.putNumber("y-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getY());
     SmartDashboard.putNumber("angle", m_robotContainer.m_driveTrain.getHeading().getDegrees());
+    SmartDashboard.putNumber("Flywheel Velocity", m_robotContainer.m_saxophone.getFlywheelVelocity());
   }
 
   /**
@@ -120,4 +132,5 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
 }

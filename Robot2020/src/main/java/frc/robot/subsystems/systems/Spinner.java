@@ -7,14 +7,19 @@
 
 package frc.robot.subsystems.systems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Spinner extends SubsystemBase {
+
+  private WPI_TalonSRX wheel_fondler = new WPI_TalonSRX(9);
+
   /**
    * Creates a new Spinner.
    */
   public Spinner() {
-
+    
   }
 
   @Override
