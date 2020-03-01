@@ -7,9 +7,13 @@
 
 package frc.robot.subsystems.systems;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
+
+  //public Compressor compressor = new Compressor();
+
   /**
    * Creates a new Pneumatics.
    */

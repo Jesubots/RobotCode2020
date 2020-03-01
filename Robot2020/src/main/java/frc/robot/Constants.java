@@ -36,4 +36,9 @@ public final class Constants {
     //RAMSETE CONSTANTS (these are not tuned but are, according to WPI, reasonable)
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+    public static final double flywheel_kF = (.75 * 1023) / 11000;
+    public static final double flywheel_kP = .3;
+    public static final double flywheel_kI = 0;
+    public static final double flywheel_kD = .25;
 }

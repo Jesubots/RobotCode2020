@@ -9,6 +9,7 @@ package frc.robot.subsystems.systems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -25,17 +26,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.commands.driveTrain.ArcadeDrive;
+import frc.robot.commands.drivetrain.ArcadeDrive;
 
 public class DriveTrain extends SubsystemBase {
   
   private static double enc_res = 4096;
   private static double wheel_rad = 0.0762; //meters
 
-  public WPI_TalonSRX left_front = new WPI_TalonSRX(1);
-  public WPI_TalonSRX left_follower = new WPI_TalonSRX(3);
-  public WPI_TalonSRX right_front = new WPI_TalonSRX(2);
-  public WPI_TalonSRX right_follower = new WPI_TalonSRX(0);
+  public WPI_TalonFX left_front = new WPI_TalonFX(1);
+  public WPI_TalonFX left_follower = new WPI_TalonFX(3);
+  public WPI_TalonFX right_front = new WPI_TalonFX(2);
+  public WPI_TalonFX right_follower = new WPI_TalonFX(0);
   private SpeedControllerGroup dt_left = new SpeedControllerGroup(left_follower, left_front);
   private SpeedControllerGroup dt_right = new SpeedControllerGroup(right_follower, right_front);
 
@@ -44,11 +45,9 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveKinematics dt_kinematics;
   private ChassisSpeeds speeds = new ChassisSpeeds();
   private final AHRS ahrs = new AHRS();
-  private Joystick driver_stick = Robot.m_robotContainer.driver_stick;
+  private Joystick driver_stick = RobotContainer.driver_stick;
 
   public DriveTrain() {
-    left_follower.set(ControlMode.Follower, 0);
-    right_follower.set(ControlMode.Follower, 2);
     left_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     right_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
@@ -57,13 +56,11 @@ public class DriveTrain extends SubsystemBase {
 
     //driveTrain.setSafetyEnabled(true);
 
-    setDefaultCommand(new ArcadeDrive());
   }
 
   @Override
   public void periodic() {
     arcadeDrive(driver_stick.getY(), driver_stick.getTwist());
-    
   }
 
   public Rotation2d getHeading() {
@@ -100,6 +97,8 @@ public class DriveTrain extends SubsystemBase {
   public void tankDriveVolts(double leftVolts, double rightVolts){
     left_front.setVoltage(leftVolts);
     left_front.setVoltage(-rightVolts);
+    left_follower.setVoltage(leftVolts);
+    right_follower.set(-rightVolts);
     driveTrain.feed();
   }
   

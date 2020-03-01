@@ -44,7 +44,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public Joystick driver_stick = new Joystick(0);
+  public static Joystick driver_stick = new Joystick(0);
   public DriveTrain m_driveTrain = new DriveTrain();
   public Intake m_intake = new Intake();
   public Magazine m_magazine = new Magazine();
