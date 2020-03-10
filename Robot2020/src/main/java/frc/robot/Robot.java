@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    
+    SmartDashboard.putNumber("fw_target", 0);
   }
 
   /**
@@ -63,10 +63,12 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("vision target present: ", visionTargetPresent);
     SmartDashboard.putNumber("vision x offset", visionOffsetX);
     SmartDashboard.putNumber("vision y offset", visionOffsetY);
-    SmartDashboard.putNumber("x-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getX());
-    SmartDashboard.putNumber("y-coord", m_robotContainer.m_driveTrain.getPose().getTranslation().getY());
-    SmartDashboard.putNumber("angle", m_robotContainer.m_driveTrain.getHeading().getDegrees());
-    SmartDashboard.putNumber("Flywheel Velocity", m_robotContainer.m_saxophone.getFlywheelVelocity());
+    SmartDashboard.putNumber("x-coord", RobotContainer.m_driveTrain.getPose().getTranslation().getX());
+    SmartDashboard.putNumber("y-coord", RobotContainer.m_driveTrain.getPose().getTranslation().getY());
+    SmartDashboard.putNumber("angle", RobotContainer.m_driveTrain.getHeading().getDegrees());
+    SmartDashboard.putNumber("Flywheel Velocity", RobotContainer.m_saxophone.getFlywheelVelocity());
+    SmartDashboard.putString("Current Color", RobotContainer.m_spinner.readColor().toString());
+    SmartDashboard.putNumber("Robot Velocity", RobotContainer.m_driveTrain.getRobotVelocity());
   }
 
   /**
@@ -117,7 +119,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    
+
   }
 
   @Override

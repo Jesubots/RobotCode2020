@@ -5,20 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.other;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.systems.Spinner;
 
-public class ArcadeDrive extends CommandBase {
+public class SpinControlWheel extends CommandBase {
+  private Spinner spnr = RobotContainer.m_spinner;
 
-  private Joystick driver_stick = RobotContainer.driver_stick;
   /**
-   * Creates a new ArcadeDrive.
+   * Creates a new ChannelPayload.
    */
-  public ArcadeDrive() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public SpinControlWheel() {
+    addRequirements(RobotContainer.m_spinner);
   }
 
   // Called when the command is initially scheduled.
@@ -29,12 +29,13 @@ public class ArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.m_driveTrain.arcadeDrive(driver_stick.getX(), driver_stick.getTwist());
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    
   }
 
   // Returns true when the command should end.

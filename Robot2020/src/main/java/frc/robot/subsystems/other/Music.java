@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 
 public class Music extends SubsystemBase {
 

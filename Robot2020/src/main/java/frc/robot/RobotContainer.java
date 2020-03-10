@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import frc.robot.commands.loader.*;
 import frc.robot.subsystems.systems.DriveTrain;
 import frc.robot.subsystems.systems.Intake;
 import frc.robot.subsystems.systems.Magazine;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.systems.Saxophone;
 import frc.robot.subsystems.systems.Spinner;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -45,14 +47,18 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static Joystick driver_stick = new Joystick(0);
-  public DriveTrain m_driveTrain = new DriveTrain();
-  public Intake m_intake = new Intake();
-  public Magazine m_magazine = new Magazine();
-  public Pneumatics m_pneumatics = new Pneumatics();
-  public Saxophone m_saxophone = new Saxophone();
-  public Spinner m_spinner = new Spinner();
+  public static Joystick panel = new Joystick(1);
+  public static DriveTrain m_driveTrain = new DriveTrain();
+  public static Intake m_intake = new Intake();
+  public static Magazine m_magazine = new Magazine();
+  public static Pneumatics m_pneumatics = new Pneumatics();
+  public static Saxophone m_saxophone = new Saxophone();
+  public static Spinner m_spinner = new Spinner();
 
-  
+  JoystickButton pickup_btn = new JoystickButton(panel, 5);
+  JoystickButton chanl_btn = new JoystickButton(panel, 6);
+  JoystickButton feed_btn = new JoystickButton(panel, 7);  
+  JoystickButton chanlxFeed_btn = new JoystickButton(panel, 8); 
 
 
 
@@ -71,7 +77,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
+    pickup_btn.whileActiveContinuous(new Pickup());
+    chanl_btn.whileActiveContinuous(new ChannelPayload());
+    feed_btn.whileActiveContinuous(new FeedPayload());
+    chanlxFeed_btn.whileActiveContinuous(new ChannelAndFeed());
   }
 
 

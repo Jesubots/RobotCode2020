@@ -9,6 +9,7 @@ package frc.robot.subsystems.systems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -33,10 +34,10 @@ public class DriveTrain extends SubsystemBase {
   private static double enc_res = 4096;
   private static double wheel_rad = 0.0762; //meters
 
-  public WPI_TalonFX left_front = new WPI_TalonFX(1);
-  public WPI_TalonFX left_follower = new WPI_TalonFX(3);
-  public WPI_TalonFX right_front = new WPI_TalonFX(2);
-  public WPI_TalonFX right_follower = new WPI_TalonFX(0);
+  public WPI_TalonFX left_front = new WPI_TalonFX(Constants.DTFL_PORT);
+  public WPI_TalonFX left_follower = new WPI_TalonFX(Constants.DTBL_PORT);
+  public WPI_TalonFX right_front = new WPI_TalonFX(Constants.DTFR_PORT);
+  public WPI_TalonFX right_follower = new WPI_TalonFX(Constants.DTBR_PORT);
   private SpeedControllerGroup dt_left = new SpeedControllerGroup(left_follower, left_front);
   private SpeedControllerGroup dt_right = new SpeedControllerGroup(right_follower, right_front);
 
@@ -50,6 +51,12 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
     left_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     right_front.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    
+    left_front.setNeutralMode(NeutralMode.Brake);
+    right_front.setNeutralMode(NeutralMode.Brake);
+    left_follower.setNeutralMode(NeutralMode.Brake);
+    right_follower.setNeutralMode(NeutralMode.Brake);
+
 
     dt_odometry = new DifferentialDriveOdometry(getHeading());
     dt_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidthMeters); 
@@ -60,7 +67,7 @@ public class DriveTrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    arcadeDrive(driver_stick.getY(), driver_stick.getTwist());
+    arcadeDrive(-driver_stick.getY(), driver_stick.getTwist() * Constants.TURN_MULTIPLIER);
   }
 
   public Rotation2d getHeading() {
@@ -90,15 +97,20 @@ public class DriveTrain extends SubsystemBase {
   public void updateOdometry() {
     dt_odometry.update(getHeading(), getLeftEncoder(), getRightEncoder());
   }
+
+  public double getRobotVelocity() {
+    return ((((double)left_front.getSelectedSensorVelocity() - (double)right_front.getSelectedSensorVelocity())/ 4096f) * .0508 * 2 * Math.PI * 10f);
+  }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(left_front.getSelectedSensorVelocity(), right_front.getSelectedSensorVelocity());
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts){
     left_front.setVoltage(leftVolts);
-    left_front.setVoltage(-rightVolts);
+    left_front.setVoltage(rightVolts);
     left_follower.setVoltage(leftVolts);
-    right_follower.set(-rightVolts);
+    right_follower.set(rightVolts);
     driveTrain.feed();
   }
   

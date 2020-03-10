@@ -7,24 +7,43 @@
 
 package frc.robot.subsystems.systems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Magazine extends SubsystemBase {
 
-  private WPI_TalonSRX belt = new WPI_TalonSRX(6);
-  private WPI_TalonSRX conveyer = new WPI_TalonSRX(7);
+  private WPI_TalonSRX loader = new WPI_TalonSRX(Constants.LOADER_PORT);
+  private WPI_TalonSRX conveyer = new WPI_TalonSRX(Constants.CONVEYER_PORT);
 
   /**
    * Creates a new Magazine.
    */
   public Magazine() {
-    
+    conveyer.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
+  }
+
+  public void runConveyer(double output) {
+    conveyer.set(ControlMode.PercentOutput, output);
+  }
+
+  public void stopConveyer() {
+    conveyer.stopMotor();
+  }
+
+  public void runLoader(double output) {
+    loader.set(ControlMode.PercentOutput, output);
+  }
+
+  public void stopLoader() {
+    loader.stopMotor();
   }
 }
